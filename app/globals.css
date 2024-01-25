@@ -1,0 +1,19 @@
+.layout{
+    height: 100vh;
+    background-image: url("/header.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.header {
+    height: 64px;
+    background: none;
+}
+
+.footer {
+    background: none;
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.6);
+}
