@@ -800,7 +800,7 @@ export default function Home() {
 
   const [displayValue, setDisplayValue] = useState(format());
 
-  const onChange = (value, param: string) => {
+  const onChange = (value:string, param: string) => {
     config[param] = value;
     setDisplayValue(format());
   };
