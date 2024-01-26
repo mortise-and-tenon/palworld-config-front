@@ -31,7 +31,7 @@ export default function ConfigCard(props:CardProps) {
                   <Select
                     defaultValue={configItem.defaultValue}
                     style={{ width: 120 }}
-                    onChange={(value: string | number) =>
+                    onChange={(value: string) =>
                       props.valueChange(value, configItem.key)
                     }
                     options={configItem.options}
@@ -49,7 +49,7 @@ export default function ConfigCard(props:CardProps) {
                         : "0.000001"
                     }
                     style={{ width: 120 }}
-                    onChange={(value: string | number) =>
+                    onChange={(value: string) =>
                       props.valueChange(value, configItem.key)
                     }
                   />
@@ -58,7 +58,7 @@ export default function ConfigCard(props:CardProps) {
                   <Input
                     defaultValue={configItem.defaultValue}
                     style={{ width: 120 }}
-                    onChange={(value: string | number) =>
+                    onChange={(value: string) =>
                       props.valueChange(value, configItem.key)
                     }
                   />
@@ -68,7 +68,7 @@ export default function ConfigCard(props:CardProps) {
                     checkedChildren="开启"
                     unCheckedChildren="关闭"
                     defaultValue={configItem.defaultValue === "True"}
-                    onChange={(value: string | number, event) =>
+                    onChange={(value: string, event) =>
                       props.valueChange(
                         value ? "True" : "False",
                         configItem.key
