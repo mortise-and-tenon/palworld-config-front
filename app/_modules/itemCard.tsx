@@ -67,9 +67,9 @@ export default function ConfigCard(props: CardProps) {
                   <Input
                     defaultValue={configItem.defaultValue}
                     style={{ width: 120 }}
-                    onChange={(value: string | null) =>
-                      props.valueChange(value, configItem.key)
-                    }
+                    onChange={(e) =>{
+                      props.valueChange(e.target.value, configItem.key)
+                    }}
                   />
                 )}
                 {configItem.switch && (
@@ -77,7 +77,7 @@ export default function ConfigCard(props: CardProps) {
                     checkedChildren="开启"
                     unCheckedChildren="关闭"
                     defaultValue={configItem.defaultValue === "True"}
-                    onChange={(value: string, event) =>
+                    onChange={(value: boolean, event:Event) =>
                       props.valueChange(
                         value ? "True" : "False",
                         configItem.key
