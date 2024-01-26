@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 export type CardProps = {
   title: string;
   itemList: Array<ConfigItem>;
-  valueChange: (value: string, key: string) => void;
+  valueChange: (value: string | null, key: string) => void;
 };
 
 export type SelectType = {
