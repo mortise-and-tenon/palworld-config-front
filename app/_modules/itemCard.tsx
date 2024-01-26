@@ -1,9 +1,18 @@
-import { Card, Row, Col, Tooltip, Typography,Select,InputNumber,Input,Switch,Tag } from "antd";
+import {
+  Card,
+  Row,
+  Col,
+  Tooltip,
+  Typography,
+  Select,
+  InputNumber,
+  Input,
+  Switch,
+  Tag,
+} from "antd";
 import { CardProps } from "./definitions";
 
-
-
-export default function ConfigCard(props:CardProps) {
+export default function ConfigCard(props: CardProps) {
   return (
     <Card title={props.title} className="card">
       <Row>
@@ -31,7 +40,7 @@ export default function ConfigCard(props:CardProps) {
                   <Select
                     defaultValue={configItem.defaultValue}
                     style={{ width: 120 }}
-                    onChange={(value: string) =>
+                    onChange={(value: string | null) =>
                       props.valueChange(value, configItem.key)
                     }
                     options={configItem.options}
@@ -49,7 +58,7 @@ export default function ConfigCard(props:CardProps) {
                         : "0.000001"
                     }
                     style={{ width: 120 }}
-                    onChange={(value: string) =>
+                    onChange={(value: string | null) =>
                       props.valueChange(value, configItem.key)
                     }
                   />
@@ -58,7 +67,7 @@ export default function ConfigCard(props:CardProps) {
                   <Input
                     defaultValue={configItem.defaultValue}
                     style={{ width: 120 }}
-                    onChange={(value: string) =>
+                    onChange={(value: string | null) =>
                       props.valueChange(value, configItem.key)
                     }
                   />
