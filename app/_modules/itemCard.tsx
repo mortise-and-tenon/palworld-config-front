@@ -40,9 +40,11 @@ export default function ConfigCard(props: CardProps) {
                   <Select
                     defaultValue={configItem.defaultValue}
                     style={{ width: 120 }}
-                    onChange={(value: string | null) =>
-                      props.valueChange(value, configItem.key)
-                    }
+                    onChange={(value: string | null) => {
+                      if (value !== null) {
+                        props.valueChange(value, configItem.key);
+                      }
+                    }}
                     options={configItem.options}
                   />
                 )}
@@ -58,17 +60,19 @@ export default function ConfigCard(props: CardProps) {
                         : "0.000001"
                     }
                     style={{ width: 120 }}
-                    onChange={(value: string | null) =>
-                      props.valueChange(value, configItem.key)
-                    }
+                    onChange={(value: string | null) => {
+                      if (value !== null) {
+                        props.valueChange(value, configItem.key);
+                      }
+                    }}
                   />
                 )}
                 {configItem.inputText && (
                   <Input
                     defaultValue={configItem.defaultValue}
                     style={{ width: 120 }}
-                    onChange={(e) =>{
-                      props.valueChange(e.target.value, configItem.key)
+                    onChange={(e) => {
+                      props.valueChange(e.target.value, configItem.key);
                     }}
                   />
                 )}
@@ -77,7 +81,7 @@ export default function ConfigCard(props: CardProps) {
                     checkedChildren="开启"
                     unCheckedChildren="关闭"
                     defaultValue={configItem.defaultValue === "True"}
-                    onChange={(value: boolean, event:Event) =>
+                    onChange={(value, event) =>
                       props.valueChange(
                         value ? "True" : "False",
                         configItem.key
