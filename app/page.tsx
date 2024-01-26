@@ -23,6 +23,7 @@ import {
 import Image from "next/image";
 import { ReactNode, useState } from "react";
 import ConfigCard from "./_modules/itemCard";
+import { ConfigItem } from "./_modules/definitions";
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -32,27 +33,6 @@ type Config = {
   [key: string]: string;
 };
 
-type SelectType = {
-  value: string;
-  label: string;
-};
-
-type ConfigItem = {
-  key: string;
-  keyTip: string;
-  select?: boolean;
-  options?: Array<SelectType>;
-  input?: boolean;
-  inputText?: boolean;
-  scope?: {
-    min: number;
-    max: number;
-  };
-  step?: string;
-  switch?: boolean;
-  defaultValue?: string;
-  desc?: ReactNode;
-};
 
 
 
@@ -849,27 +829,27 @@ export default function Home() {
         <Flex justify="center" align="center" gap="middle" vertical>
           <ConfigCard
             title="基础配置"
-            configItemList={basicConfigItemList}
+            itemList={basicConfigItemList}
             valueChange={onChange}
           />
           <ConfigCard
             title="帕鲁配置"
-            configItemList={palConfigItemLIst}
+            itemList={palConfigItemLIst}
             valueChange={onChange}
           />
           <ConfigCard
             title="玩家配置"
-            configItemList={playerConfigItemList}
+            itemList={playerConfigItemList}
             valueChange={onChange}
           />
           <ConfigCard
             title="其他配置"
-            configItemList={configItemList}
+            itemList={configItemList}
             valueChange={onChange}
           />
           <ConfigCard
             title="服务器配置（适用于公网服务器）"
-            configItemList={publicServerConfigItemList}
+            itemList={publicServerConfigItemList}
             valueChange={onChange}
           />
         </Flex>

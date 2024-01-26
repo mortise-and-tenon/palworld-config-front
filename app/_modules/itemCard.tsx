@@ -1,6 +1,9 @@
 import { Card, Row, Col, Tooltip, Typography,Select,InputNumber,Input,Switch,Tag } from "antd";
+import { CardProps } from "./definitions";
 
-export default function ConfigCard(props) {
+
+
+export default function ConfigCard(props:CardProps) {
   return (
     <Card title={props.title} className="card">
       <Row>
@@ -9,7 +12,7 @@ export default function ConfigCard(props) {
         <Col span={10}>描述</Col>
       </Row>
 
-      {props.configItemList.map((configItem, index) => {
+      {props.itemList.map((configItem, index) => {
         return (
           <>
             <hr />
