@@ -1,6 +1,11 @@
 "use client";
 import { Flex } from "@/node_modules/antd/es/index";
 import {
+  InfoCircleOutlined,
+  WarningOutlined,
+  CloudDownloadOutlined,
+} from "@ant-design/icons";
+import {
   Card,
   Col,
   Divider,
@@ -9,14 +14,12 @@ import {
   Layout,
   Row,
   Select,
-  Space,
+  Switch,
   Tag,
   Tooltip,
   Typography,
-  Button,
-  Switch,
+  FloatButton,
 } from "antd";
-import { WarningOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import { ReactNode, useState } from "react";
 
@@ -39,11 +42,105 @@ type ConfigItem = {
   select?: boolean;
   options?: Array<SelectType>;
   input?: boolean;
+  inputText?: boolean;
+  scope?: {
+    min: number;
+    max: number;
+  };
   step?: string;
   switch?: boolean;
   defaultValue?: string;
   desc?: ReactNode;
 };
+
+export function ConfigCard(props) {
+  return (
+    <Card title={props.title} className="card">
+      <Row>
+        <Col span={6}>字段</Col>
+        <Col span={8}>配置</Col>
+        <Col span={10}>描述</Col>
+      </Row>
+
+      {props.configItemList.map((configItem, index) => {
+        return (
+          <>
+            <hr />
+            <Row align="middle" key={index}>
+              <Col span={6}>
+                <Tooltip
+                  placement="left"
+                  color="#108ee9"
+                  title={configItem.keyTip}
+                >
+                  <Typography.Text>{configItem.key}</Typography.Text>
+                </Tooltip>
+              </Col>
+              <Col span={8}>
+                {configItem.select && (
+                  <Select
+                    defaultValue={configItem.defaultValue}
+                    style={{ width: 120 }}
+                    onChange={(value: string | number) =>
+                      props.valueChange(value, configItem.key)
+                    }
+                    options={configItem.options}
+                  />
+                )}
+                {configItem.input && (
+                  <InputNumber
+                    defaultValue={configItem.defaultValue}
+                    stringMode
+                    min={configItem.scope?.min}
+                    max={configItem.scope?.max}
+                    step={
+                      configItem.step !== undefined
+                        ? configItem.step
+                        : "0.000001"
+                    }
+                    style={{ width: 120 }}
+                    onChange={(value: string | number) =>
+                      props.valueChange(value, configItem.key)
+                    }
+                  />
+                )}
+                {configItem.inputText && (
+                  <Input
+                    defaultValue={configItem.defaultValue}
+                    style={{ width: 120 }}
+                    onChange={(value: string | number) =>
+                      props.valueChange(value, configItem.key)
+                    }
+                  />
+                )}
+                {configItem.switch && (
+                  <Switch
+                    checkedChildren="开启"
+                    unCheckedChildren="关闭"
+                    defaultValue={configItem.defaultValue === "True"}
+                    onChange={(value: string | number, event) =>
+                      props.valueChange(
+                        value ? "True" : "False",
+                        configItem.key
+                      )
+                    }
+                  />
+                )}
+              </Col>
+              <Col span={10}>
+                <Typography.Text>
+                  {configItem.keyTip}。默认：
+                  <Tag color="black">{configItem.defaultValue}</Tag>
+                  {configItem.desc}
+                </Typography.Text>
+              </Col>
+            </Row>
+          </>
+        );
+      })}
+    </Card>
+  );
+}
 
 export default function Home() {
   let config: Config = {
@@ -81,12 +178,12 @@ export default function Home() {
     DropItemMaxNum: "3000",
     DropItemMaxNum_UNKO: "100",
     BaseCampMaxNum: "128",
-    BaseCampWorkerMaxNum: "15",
-    DropItemAliveMaxHours: "1",
+    BaseCampWorkerMaxNum: "20",
+    DropItemAliveMaxHours: "1.000000",
     bAutoResetGuildNoOnlinePlayers: "False",
     AutoResetGuildTimeNoOnlinePlayers: "72.000000",
-    GuildPlayerMaxNum: "20",
-    PalEggDefaultHatchingTime: "1",
+    GuildPlayerMaxNum: "15",
+    PalEggDefaultHatchingTime: "36.000000",
     WorkSpeedRate: "1",
     bIsMultiplay: "False",
     bIsPvP: "False",
@@ -98,13 +195,15 @@ export default function Home() {
     bEnableDefenseOtherGuildPlayer: "False",
     CoopPlayerMaxNum: "4",
     ServerPlayerMaxNum: "32",
-    ServerName: "CHIBANLI",
+    ServerName: "MorTnon Palworld Server",
     ServerDescription: "",
     AdminPassword: "",
     ServerPassword: "",
     PublicPort: "8211",
     PublicIP: "",
+    EpicApp: "PalServer",
     RCONEnabled: "False",
+    RCONPort: "",
     Region: "",
     bUseAuth: "True",
     BanListURL: "https://api.palworldgame.com/api/banlist.txt",
@@ -120,7 +219,7 @@ export default function Home() {
     "PalDamageRateAttack",
     "PalDamageRateDefense",
     "PlayerDamageRateAttack",
-    "PlayerDamageRateDefense", //
+    "PlayerDamageRateDefense",
     "PlayerStomachDecreaceRate",
     "PlayerStaminaDecreaceRate",
     "PlayerAutoHPRegeneRate",
@@ -168,13 +267,16 @@ export default function Home() {
     "ServerPassword",
     "PublicPort",
     "PublicIP",
+    "EpicApp",
     "RCONEnabled",
+    "RCONPort",
     "Region",
     "bUseAuth",
     "BanListURL",
   ];
 
-  const configItemList: Array<ConfigItem> = [
+  //基本配置
+  const basicConfigItemList: Array<ConfigItem> = [
     {
       key: "Difficulty",
       keyTip: "难度",
@@ -199,17 +301,25 @@ export default function Home() {
     },
     {
       key: "DayTimeSpeedRate",
-      keyTip: "白天速率",
+      keyTip: "白天流逝速率",
       input: true,
       defaultValue: "1",
-      desc: <> 范围：(0.1,5)</>,
+      scope: {
+        min: 0.1,
+        max: 5,
+      },
+      desc: <> 范围：0.1~5</>,
     },
     {
       key: "NightTimeSpeedRate",
-      keyTip: "夜晚速率",
+      keyTip: "夜晚流逝速率",
       input: true,
       defaultValue: "1",
-      desc: <>范围：(0.1,5)</>,
+      scope: {
+        min: 0.1,
+        max: 5,
+      },
+      desc: <>范围：0.1~5</>,
     },
     {
       key: "ExpRate",
@@ -217,14 +327,22 @@ export default function Home() {
       input: true,
       defaultValue: "1",
     },
+  ];
+
+  //pal配置
+  const palConfigItemLIst: Array<ConfigItem> = [
     {
       key: "PalCaptureRate",
       keyTip: "帕鲁抓捕几率",
       input: true,
       defaultValue: "1",
+      scope: {
+        min: 0.5,
+        max: 5,
+      },
       desc: (
         <>
-          范围：(0.5,2)。
+          范围：0.5~2。
           <Tooltip
             color="#f50"
             title="这个参数调整非常敏感请谨慎调整。困难模式为0.8，简单模式为2"
@@ -260,21 +378,72 @@ export default function Home() {
       keyTip: "帕鲁受到的伤害倍率",
       input: true,
       defaultValue: "1",
-      desc: <>范围：(0.1,5)</>,
+      scope: {
+        min: 0.1,
+        max: 5,
+      },
+      desc: <>范围：0.1~5</>,
     },
+    {
+      key: "PalStomachDecreaceRate",
+      keyTip: "帕鲁饱腹感下降率",
+      input: true,
+      defaultValue: "1",
+      scope: {
+        min: 0.1,
+        max: 5,
+      },
+      desc: <>范围：0.1~5</>,
+    },
+    {
+      key: "PalStaminaDecreaceRate",
+      keyTip: "帕鲁耐力下降率",
+      input: true,
+      defaultValue: "1",
+      scope: {
+        min: 0.1,
+        max: 5,
+      },
+      desc: <>范围：0.1~5</>,
+    },
+    {
+      key: "PalAutoHPRegeneRate",
+      keyTip: "帕鲁自动生命回复率",
+      input: true,
+      defaultValue: "1",
+    },
+    {
+      key: "PalAutoHpRegeneRateInSleep",
+      keyTip: "帕鲁睡眠中生命自动回复率",
+      input: true,
+      defaultValue: "1",
+      desc: <>在帕鲁箱中</>,
+    },
+  ];
+
+  //player配置
+  const playerConfigItemList: Array<ConfigItem> = [
     {
       key: "PlayerDamageRateAttack",
       keyTip: "玩家造成的伤害倍率",
       input: true,
       defaultValue: "1",
-      desc: <>范围：(0.1,5)</>,
+      scope: {
+        min: 0.1,
+        max: 5,
+      },
+      desc: <>范围：0.1~5</>,
     },
     {
       key: "PlayerDamageRateDefense",
       keyTip: "玩家受到的伤害倍率",
       input: true,
       defaultValue: "1",
-      desc: <>范围：(0.1,5)</>,
+      scope: {
+        min: 0.1,
+        max: 5,
+      },
+      desc: <>范围：0.1~5</>,
     },
     {
       key: "PlayerStomachDecreaceRate",
@@ -303,95 +472,18 @@ export default function Home() {
       defaultValue: "1",
     },
     {
-      key: "PalStomachDecreaceRate",
-      keyTip: "帕鲁饱腹感下降率",
-      input: true,
-      defaultValue: "1",
-      desc: <>范围：0.1~5</>,
+      key: "bEnablePlayerToPlayerDamage",
+      keyTip: "玩家对玩家伤害",
+      defaultValue: "False",
+      switch: true,
+      desc: <>[推荐用于PVP] 玩家对玩家伤害</>,
     },
     {
-      key: "PalStaminaDecreaceRate",
-      keyTip: "帕鲁耐力下降率",
-      input: true,
-      defaultValue: "1",
-      desc: <>范围：0.1~5</>,
-    },
-    {
-      key: "PalAutoHPRegeneRate",
-      keyTip: "帕鲁自动生命回复率",
-      input: true,
-      defaultValue: "1",
-    },
-    {
-      key: "PalAutoHpRegeneRateInSleep",
-      keyTip: "帕鲁睡眠中生命自动回复率",
-      input: true,
-      defaultValue: "1",
-      desc: <>在帕鲁箱中</>,
-    },
-    {
-      key: "BuildObjectDamageRate",
-      keyTip: "建筑物受伤害率",
-      input: true,
-      defaultValue: "1",
-      desc: <>范围：0.5~3</>,
-    },
-    {
-      key: "BuildObjectDeteriorationDamageRate",
-      keyTip: "建筑物劣化率",
-      input: true,
-      defaultValue: "1",
-      desc: <>范围：0~10</>,
-    },
-    {
-      key: "CollectionDropRate",
-      keyTip: "采集资源率",
-      input: true,
-      defaultValue: "1",
-      desc: (
-        <>
-          <Tooltip
-            color="#87d068"
-            title="例：拿石稿敲小帕鲁矿取得1个帕鲁碎片默认要6下平均19点伤害，若调为3则要敲2下平均19点伤害。"
-          >
-            <InfoCircleOutlined style={{ color: "green" }} />
-          </Tooltip>
-        </>
-      ),
-    },
-    {
-      key: "CollectionObjectHpRate",
-      keyTip: "采集资源生命率",
-      input: true,
-      defaultValue: "1",
-      desc: (
-        <>
-          范围：0.5~3。
-          <Tooltip color="#87d068" title="经敲小帕鲁矿，测试不生效">
-            <InfoCircleOutlined style={{ color: "green" }} />
-          </Tooltip>
-        </>
-      ),
-    },
-    {
-      key: "CollectionObjectRespawnSpeedRate",
-      keyTip: "采集资源重生间隔",
-      input: true,
-      defaultValue: "1",
-      desc: (
-        <>
-          范围：0，0.5~3。
-          <Tooltip color="#87d068" title="树木大矿石为1小时，若为0立即重生">
-            <InfoCircleOutlined style={{ color: "green" }} />
-          </Tooltip>
-        </>
-      ),
-    },
-    {
-      key: "EnemyDropItemRate",
-      keyTip: "敌人掉落物品率",
-      input: true,
-      defaultValue: "1",
+      key: "bEnableFriendlyFire",
+      keyTip: "玩家对友军伤害",
+      defaultValue: "False",
+      switch: true,
+      desc: <>[推荐用于PVP] 玩家对自己帕鲁跟同公会玩家的伤害</>,
     },
     {
       key: "DeathPenalty",
@@ -428,88 +520,18 @@ export default function Home() {
       ),
     },
     {
-      key: "bEnablePlayerToPlayerDamage",
-      keyTip: "玩家对玩家伤害",
-      defaultValue: "False",
-      switch: true,
-      desc: <>[推荐用于PVP] 玩家对玩家伤害</>,
-    },
-    {
-      key: "bEnableFriendlyFire",
-      keyTip: "玩家对友军伤害",
-      defaultValue: "False",
-      switch: true,
-      desc: <>[推荐用于PVP] 玩家对自己帕鲁跟同公会玩家的伤害</>,
-    },
-    {
-      key: "bEnableInvaderEnemy",
-      keyTip: "允许入侵",
-      defaultValue: "True",
-      switch: true,
-      desc: <>袭击事件是否开启</>,
-    },
-    {
-      key: "bActiveUNKO",
-      keyTip: "激活UNKO",
-      defaultValue: "False",
-      switch: true,
-    },
-    {
-      key: "bEnableAimAssistPad",
-      keyTip: "平板辅助瞄准",
-      switch: true,
-      defaultValue: "True",
-    },
-    {
-      key: "bEnableAimAssistKeyboard",
-      keyTip: "键盘辅助瞄准",
+      key: "bIsMultiplay",
+      keyTip: "多玩家",
       switch: true,
       defaultValue: "False",
+      desc: <>作用未知。</>,
     },
     {
-      key: "DropItemMaxNum",
-      keyTip: "世界内掉落物上限",
-      input: true,
-      step:"1",
-      defaultValue: "3000",
-    },
-    {
-      key: "DropItemMaxNum_UNKO",
-      keyTip: "神秘UNKO掉落物上限",
-      input: true,
-      step:"1",
-      defaultValue: "100",
-    },
-    {
-      key: "BaseCampMaxNum",
-      keyTip: "基地最大数量",
-      input: true,
-      step:"1",
-      defaultValue: "128",
-    },
-    {
-      key: "BaseCampWorkerMaxNum",
-      keyTip: "基地内帕鲁工人最大值",
-      input: true,
-      step:"1",
-      defaultValue: "15",
-    },
-    {
-      key: "DropItemAliveMaxHours",
-      keyTip: "掉落物保留时长",
-      input: true,
-      defaultValue: "1",
-      desc: (
-        <>
-          小时。
-          <Tooltip
-            color="#87d068"
-            title="建议设为0.5以保证掉落物不会太多造成卡顿"
-          >
-            <InfoCircleOutlined style={{ color: "green" }} />
-          </Tooltip>
-        </>
-      ),
+      key: "bIsPvP",
+      keyTip: "允许PVP",
+      switch: true,
+      defaultValue: "False",
+      desc: <> [推荐用于PVP] 多人游戏与PVP模式</>,
     },
     {
       key: "bAutoResetGuildNoOnlinePlayers",
@@ -529,35 +551,8 @@ export default function Home() {
       key: "GuildPlayerMaxNum",
       keyTip: "公会玩家上限",
       input: true,
-      step:"1",
-      defaultValue: "20",
-    },
-    {
-      key: "PalEggDefaultHatchingTime",
-      keyTip: "巨大蛋的孵化时间",
-      input: true,
-      defaultValue: "1",
-      desc: <>小时。</>,
-    },
-    {
-      key: "WorkSpeedRate",
-      keyTip: "工作效率",
-      input: true,
-      defaultValue: "1",
-    },
-    {
-      key: "bIsMultiplay",
-      keyTip: "多玩家",
-      switch: true,
-      defaultValue: "False",
-      desc: <>作用未知。</>,
-    },
-    {
-      key: "bIsPvP",
-      keyTip: "允许PVP",
-      switch: true,
-      defaultValue: "False",
-      desc: <> [推荐用于PVP] 多人游戏与PVP模式</>,
+      step: "1",
+      defaultValue: "15",
     },
     {
       key: "bCanPickupOtherGuildDeathPenaltyDrop",
@@ -607,56 +602,235 @@ export default function Home() {
       defaultValue: "False",
       desc: <>[推荐用于PVP] </>,
     },
+  ];
+
+  //其他配置
+  const configItemList: Array<ConfigItem> = [
+    {
+      key: "BuildObjectDamageRate",
+      keyTip: "建筑物受伤害率",
+      input: true,
+      defaultValue: "1",
+      scope: {
+        min: 0.5,
+        max: 3,
+      },
+      desc: <>范围：0.5~3</>,
+    },
+    {
+      key: "BuildObjectDeteriorationDamageRate",
+      keyTip: "建筑物劣化率",
+      input: true,
+      defaultValue: "1",
+      scope: {
+        min: 0,
+        max: 10,
+      },
+      desc: <>范围：0~10</>,
+    },
+    {
+      key: "CollectionDropRate",
+      keyTip: "采集资源率",
+      input: true,
+      defaultValue: "1",
+      desc: (
+        <>
+          <Tooltip
+            color="#87d068"
+            title="例：拿石稿敲小帕鲁矿取得1个帕鲁碎片默认要6下平均19点伤害，若调为3则要敲2下平均19点伤害。"
+          >
+            <InfoCircleOutlined style={{ color: "green" }} />
+          </Tooltip>
+        </>
+      ),
+    },
+    {
+      key: "CollectionObjectHpRate",
+      keyTip: "采集资源生命率",
+      input: true,
+      defaultValue: "1",
+      scope: {
+        min: 0.5,
+        max: 3,
+      },
+      desc: (
+        <>
+          范围：0.5~3。
+          <Tooltip color="#87d068" title="经敲小帕鲁矿，测试不生效">
+            <InfoCircleOutlined style={{ color: "green" }} />
+          </Tooltip>
+        </>
+      ),
+    },
+    {
+      key: "CollectionObjectRespawnSpeedRate",
+      keyTip: "采集资源重生间隔",
+      input: true,
+      defaultValue: "1",
+      scope: {
+        min: 0.5,
+        max: 3,
+      },
+      desc: (
+        <>
+          范围：0，0.5~3。
+          <Tooltip color="#87d068" title="树木大矿石为1小时，若为0立即重生">
+            <InfoCircleOutlined style={{ color: "green" }} />
+          </Tooltip>
+        </>
+      ),
+    },
+    {
+      key: "EnemyDropItemRate",
+      keyTip: "敌人掉落物品率",
+      input: true,
+      defaultValue: "1",
+    },
+
+    {
+      key: "bEnableInvaderEnemy",
+      keyTip: "允许入侵",
+      defaultValue: "True",
+      switch: true,
+      desc: <>袭击事件是否开启</>,
+    },
+    {
+      key: "bActiveUNKO",
+      keyTip: "激活UNKO",
+      defaultValue: "False",
+      switch: true,
+    },
+    {
+      key: "bEnableAimAssistPad",
+      keyTip: "平板辅助瞄准",
+      switch: true,
+      defaultValue: "True",
+    },
+    {
+      key: "bEnableAimAssistKeyboard",
+      keyTip: "键盘辅助瞄准",
+      switch: true,
+      defaultValue: "False",
+    },
+    {
+      key: "DropItemMaxNum",
+      keyTip: "世界内掉落物上限",
+      input: true,
+      step: "1",
+      defaultValue: "3000",
+    },
+    {
+      key: "DropItemMaxNum_UNKO",
+      keyTip: "神秘UNKO掉落物上限",
+      input: true,
+      step: "1",
+      defaultValue: "100",
+    },
+    {
+      key: "BaseCampMaxNum",
+      keyTip: "基地最大数量",
+      input: true,
+      step: "1",
+      defaultValue: "128",
+    },
+    {
+      key: "BaseCampWorkerMaxNum",
+      keyTip: "基地内帕鲁工人最大值",
+      input: true,
+      step: "1",
+      defaultValue: "15",
+    },
+    {
+      key: "DropItemAliveMaxHours",
+      keyTip: "掉落物保留时长",
+      input: true,
+      defaultValue: "1",
+      desc: (
+        <>
+          小时。
+          <Tooltip
+            color="#87d068"
+            title="建议设为0.5以保证掉落物不会太多造成卡顿"
+          >
+            <InfoCircleOutlined style={{ color: "green" }} />
+          </Tooltip>
+        </>
+      ),
+    },
+
+    {
+      key: "PalEggDefaultHatchingTime",
+      keyTip: "巨大蛋的孵化时间",
+      input: true,
+      defaultValue: "36",
+      desc: <>小时。</>,
+    },
+    {
+      key: "WorkSpeedRate",
+      keyTip: "工作效率",
+      input: true,
+      defaultValue: "1",
+    },
+  ];
+
+  //服务器配置
+  const publicServerConfigItemList: Array<ConfigItem> = [
     {
       key: "CoopPlayerMaxNum",
       keyTip: "合作玩家人数",
       input: true,
-      step:"1",
+      step: "1",
       defaultValue: "4",
     },
     {
       key: "ServerPlayerMaxNum",
       keyTip: "服务器最大人数",
       input: true,
-      step:"1",
+      step: "1",
       defaultValue: "32",
     },
     {
       key: "ServerName",
       keyTip: "服务器名称",
-      input: true,
-      defaultValue: "CHIBANLI",
+      inputText: true,
+      defaultValue: "MorTnon Palworld Server",
     },
     {
       key: "ServerDescription",
       keyTip: "服务器简介",
-      input: true,
+      inputText: true,
     },
     {
       key: "AdminPassword",
       keyTip: "服务器管理员密码",
-      input: true,
+      inputText: true,
       defaultValue: "",
     },
     {
       key: "ServerPassword",
       keyTip: "服务器密码",
-      input: true,
+      inputText: true,
       defaultValue: "",
-      desc: <>等待官方更新耐久耐久修复</>,
+      desc: <></>,
     },
     {
       key: "PublicPort",
       keyTip: "服务器端口",
       input: true,
-      step:"1",
+      step: "1",
       defaultValue: "8211",
     },
     {
       key: "PublicIP",
       keyTip: "服务器IP",
-      input: true,
+      inputText: true,
       defaultValue: "",
+    },
+    {
+      key: "EpicApp",
+      keyTip: "EpicApp 配置",
+      inputText: true,
+      desc: <>默认使用该值</>,
     },
     {
       key: "RCONEnabled",
@@ -665,9 +839,16 @@ export default function Home() {
       defaultValue: "False",
     },
     {
+      key: "RCONPort",
+      keyTip: "RCON 端口",
+      input: true,
+      defaultValue: "25575",
+      step: "1",
+    },
+    {
       key: "Region",
       keyTip: "区域",
-      input: true,
+      inputText: true,
       defaultValue: "",
       desc: <>目前未知</>,
     },
@@ -681,7 +862,7 @@ export default function Home() {
     {
       key: "BanListURL",
       keyTip: "封锁名单",
-      input: true,
+      inputText: true,
       defaultValue: "https://api.palworldgame.com/api/banlist.txt",
       desc: <>当前只支持官方</>,
     },
@@ -691,7 +872,17 @@ export default function Home() {
   const format = () => {
     let params = "";
     paramsKeys.forEach((key) => {
-      params += `${key}=${config[key]},`;
+      if (
+        key === "ServerName" ||
+        key === "ServerDescription" ||
+        key === "AdminPassword" ||
+        key === "ServerPassword" ||
+        key === "BanListURL"
+      ) {
+        params += `${key}="${config[key]}",`;
+      } else {
+        params += `${key}=${config[key]},`;
+      }
     });
     params = params.slice(0, -1);
 
@@ -700,16 +891,36 @@ export default function Home() {
     );
   };
 
+  //下载配置文件
+  const downloadFile = () => {
+    const data = format();
+    const blob = new Blob([data], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "PalWorldSettings.ini";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const [displayValue, setDisplayValue] = useState(format());
 
   const onChange = (value, param: string) => {
-    console.log("key:", param, ",value:", value);
     config[param] = value;
     setDisplayValue(format());
   };
 
   return (
     <Layout className="layout">
+      <FloatButton.BackTop />
+      <FloatButton
+        icon={<CloudDownloadOutlined />}
+        type="primary"
+        tooltip={<div>下载配置文件</div>}
+        style={{ right: 94 }}
+        onClick={downloadFile}
+      />
       <Header className="header">
         <Flex justify="center" align="center">
           <Image src="/cat.png" width={60} height="60" alt="logo" />
@@ -721,77 +932,32 @@ export default function Home() {
       </Header>
       <Content>
         <Divider />
-        <Flex justify="center" align="center">
-          <Space size={16}>
-            <Card title="" className="card">
-              <Row>
-                <Col span={6}>字段</Col>
-                <Col span={8}>配置</Col>
-                <Col span={10}>描述</Col>
-              </Row>
-
-              {configItemList.map((configItem, index) => {
-                return (
-                  <>
-                    <Divider />
-                    <Row align="middle" key={index}>
-                      <Col span={6}>
-                        <Tooltip
-                          placement="left"
-                          color="#108ee9"
-                          title={configItem.keyTip}
-                        >
-                          <Typography.Text>{configItem.key}</Typography.Text>
-                        </Tooltip>
-                      </Col>
-                      <Col span={8}>
-                        {configItem.select && (
-                          <Select
-                            defaultValue={configItem.defaultValue}
-                            style={{ width: 120 }}
-                            onChange={(value: string | number) =>
-                              onChange(value, configItem.key)
-                            }
-                            options={configItem.options}
-                          />
-                        )}
-                        {configItem.input && (
-                          <InputNumber
-                            defaultValue={configItem.defaultValue}
-                            stringMode
-                            step={
-                              configItem.step !== undefined ? configItem.step : "0.000001"
-                            }
-                            style={{ width: 120 }}
-                            onChange={(value: string | number) =>
-                              onChange(value, configItem.key)
-                            }
-                          />
-                        )}
-                        {configItem.switch && (
-                          <Switch
-                            checkedChildren="开启"
-                            unCheckedChildren="关闭"
-                            value={configItem.defaultValue === "True"}
-                            onChange={(value: string | number, event) =>
-                              onChange(value ? "True" : "False", configItem.key)
-                            }
-                          />
-                        )}
-                      </Col>
-                      <Col span={10}>
-                        <Typography.Text>
-                          {configItem.keyTip}。默认：
-                          <Tag color="black">{configItem.defaultValue}</Tag>
-                          {configItem.desc}
-                        </Typography.Text>
-                      </Col>
-                    </Row>
-                  </>
-                );
-              })}
-            </Card>
-          </Space>
+        <Flex justify="center" align="center" gap="middle" vertical>
+          <ConfigCard
+            title="基础配置"
+            configItemList={basicConfigItemList}
+            valueChange={onChange}
+          />
+          <ConfigCard
+            title="帕鲁配置"
+            configItemList={palConfigItemLIst}
+            valueChange={onChange}
+          />
+          <ConfigCard
+            title="玩家配置"
+            configItemList={playerConfigItemList}
+            valueChange={onChange}
+          />
+          <ConfigCard
+            title="其他配置"
+            configItemList={configItemList}
+            valueChange={onChange}
+          />
+          <ConfigCard
+            title="服务器配置（适用于公网服务器）"
+            configItemList={publicServerConfigItemList}
+            valueChange={onChange}
+          />
         </Flex>
         <Flex justify="center" align="center">
           <Card style={{ marginTop: "16px", width: "80%" }}>

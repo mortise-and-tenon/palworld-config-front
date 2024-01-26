@@ -1,8 +1,8 @@
 .layout{
-    height: 100vh;
+    /* height: 100vh; */
     background-image: url("/header.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-repeat: repeat;
+    /* background-size: cover; */
 }
 
 .header {
