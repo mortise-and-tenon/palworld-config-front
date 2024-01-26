@@ -3,8 +3,9 @@ import "./normalize.css"
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "PalWorld——帕鲁幻兽配置",
-  description: "palword 帕鲁幻兽配置",
+  title: "PalWorld——幻兽帕鲁配置",
+  description: "palword 幻兽帕鲁配置",
+  keyword:"palworld,pal,帕鲁,幻兽,下载,破解,免费,学习,配置,服务器"
 };
 
 export default function RootLayout({
