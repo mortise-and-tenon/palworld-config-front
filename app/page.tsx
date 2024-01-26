@@ -199,8 +199,8 @@ export default function Home() {
       input: true,
       defaultValue: "1",
       scope: {
-        min: 0.1,
-        max: 5,
+        min: "0.1",
+        max: "5",
       },
       desc: <> 范围：0.1~5</>,
     },
@@ -210,8 +210,8 @@ export default function Home() {
       input: true,
       defaultValue: "1",
       scope: {
-        min: 0.1,
-        max: 5,
+        min: "0.1",
+        max: "5",
       },
       desc: <>范围：0.1~5</>,
     },
@@ -231,8 +231,8 @@ export default function Home() {
       input: true,
       defaultValue: "1",
       scope: {
-        min: 0.5,
-        max: 5,
+        min: "0.5",
+        max: "5",
       },
       desc: (
         <>
@@ -273,8 +273,8 @@ export default function Home() {
       input: true,
       defaultValue: "1",
       scope: {
-        min: 0.1,
-        max: 5,
+        min: "0.1",
+        max: "5",
       },
       desc: <>范围：0.1~5</>,
     },
@@ -284,8 +284,8 @@ export default function Home() {
       input: true,
       defaultValue: "1",
       scope: {
-        min: 0.1,
-        max: 5,
+        min: "0.1",
+        max: "5",
       },
       desc: <>范围：0.1~5</>,
     },
@@ -295,8 +295,8 @@ export default function Home() {
       input: true,
       defaultValue: "1",
       scope: {
-        min: 0.1,
-        max: 5,
+        min: "0.1",
+        max: "5",
       },
       desc: <>范围：0.1~5</>,
     },
@@ -323,8 +323,8 @@ export default function Home() {
       input: true,
       defaultValue: "1",
       scope: {
-        min: 0.1,
-        max: 5,
+        min: "0.1",
+        max: "5",
       },
       desc: <>范围：0.1~5</>,
     },
@@ -334,8 +334,8 @@ export default function Home() {
       input: true,
       defaultValue: "1",
       scope: {
-        min: 0.1,
-        max: 5,
+        min: "0.1",
+        max: "5",
       },
       desc: <>范围：0.1~5</>,
     },
@@ -506,8 +506,8 @@ export default function Home() {
       input: true,
       defaultValue: "1",
       scope: {
-        min: 0.5,
-        max: 3,
+        min: "0.5",
+        max: "3",
       },
       desc: <>范围：0.5~3</>,
     },
@@ -517,8 +517,8 @@ export default function Home() {
       input: true,
       defaultValue: "1",
       scope: {
-        min: 0,
-        max: 10,
+        min: "0",
+        max: "10",
       },
       desc: <>范围：0~10</>,
     },
@@ -544,8 +544,8 @@ export default function Home() {
       input: true,
       defaultValue: "1",
       scope: {
-        min: 0.5,
-        max: 3,
+        min: "0.5",
+        max: "3",
       },
       desc: (
         <>
@@ -562,8 +562,8 @@ export default function Home() {
       input: true,
       defaultValue: "1",
       scope: {
-        min: 0.5,
-        max: 3,
+        min: "0.5",
+        max: "3",
       },
       desc: (
         <>

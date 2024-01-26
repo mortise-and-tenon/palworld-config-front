@@ -19,8 +19,8 @@ export type ConfigItem = {
   input?: boolean;
   inputText?: boolean;
   scope?: {
-    min: number;
-    max: number;
+    min: string;
+    max: string;
   };
   step?: string;
   switch?: boolean;
