@@ -825,7 +825,7 @@ export default function Home() {
           <Image src="/cat.png" width={60} height={60} alt="logo" />
           <h2> PalWorld INI 配置文件生成器</h2>
           <div style={{marginTop:"4px"}}>
-          <Button icon={<GithubOutlined/>} type="circle" href="https://github.com/mortise-and-tenon/palworld-config-front" />
+          <Button icon={<GithubOutlined/>} shape="circle" href="https://github.com/mortise-and-tenon/palworld-config-front" />
           </div>
         </Flex>
       </Header>
