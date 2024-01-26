@@ -824,8 +824,8 @@ export default function Home() {
         <Flex justify="center" align="center" style={{ height: "64px" }}>
           <Image src="/cat.png" width={60} height={60} alt="logo" />
           <h2> PalWorld INI 配置文件生成器</h2>
-          <div style={{marginTop:"4px"}}>
-          <Button icon={<GithubOutlined/>} shape="circle" href="https://github.com/mortise-and-tenon/palworld-config-front" />
+          <div style={{margin:"8px 0 0 8px"}}>
+          <Link style={{color:"inherit"}} href="https://github.com/mortise-and-tenon/palworld-config-front" ><GithubOutlined style={{fontSize:"20px"}}/></Link>
           </div>
         </Flex>
       </Header>
