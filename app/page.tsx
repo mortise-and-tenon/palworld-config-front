@@ -4,6 +4,7 @@ import {
   InfoCircleOutlined,
   WarningOutlined,
   CloudDownloadOutlined,
+  GithubOutlined,
 } from "@ant-design/icons";
 import {
   Card,
@@ -19,11 +20,13 @@ import {
   Tooltip,
   Typography,
   FloatButton,
+  Button,
 } from "antd";
 import Image from "next/image";
 import { ReactNode, useState } from "react";
 import ConfigCard from "./_modules/itemCard";
 import { ConfigItem } from "./_modules/definitions";
+import Link from "@/node_modules/next/link";
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -32,9 +35,6 @@ const { TextArea } = Input;
 type Config = {
   [key: string]: string;
 };
-
-
-
 
 export default function Home() {
   let config: Config = {
@@ -800,13 +800,18 @@ export default function Home() {
 
   const [displayValue, setDisplayValue] = useState(format());
 
-  const onChange = (value:string, param: string) => {
+  const onChange = (value: string, param: string) => {
     config[param] = value;
     setDisplayValue(format());
   };
 
   return (
-    <Layout className="layout">
+    <Layout
+      style={{
+        backgroundImage: "url('/header.jpg')",
+        backgroundRepeat: "repeat",
+      }}
+    >
       <FloatButton.BackTop />
       <FloatButton
         icon={<CloudDownloadOutlined />}
@@ -815,17 +820,17 @@ export default function Home() {
         style={{ right: 94 }}
         onClick={downloadFile}
       />
-      <Header className="header">
-        <Flex justify="center" align="center">
-          <Image src="/cat.png" width={60} height="60" alt="logo" />
-          <Typography.Title level={2}>
-            {" "}
-            PalWorld INI 配置文件生成器
-          </Typography.Title>
+      <Header style={{ height: "64px", background: "none" }}>
+        <Flex justify="center" align="center" style={{ height: "64px" }}>
+          <Image src="/cat.png" width={60} height={60} alt="logo" />
+          <h2> PalWorld INI 配置文件生成器</h2>
+          <div style={{marginTop:"4px"}}>
+          <Button icon={<GithubOutlined/>} type="circle" href="https://github.com/mortise-and-tenon/palworld-config-front" />
+          </div>
         </Flex>
       </Header>
-      <Content>
-        <Divider />
+      <Content style={{ marginTop: "16px" }}>
+        {/* <Divider /> */}
         <Flex justify="center" align="center" gap="middle" vertical>
           <ConfigCard
             title="基础配置"
@@ -859,7 +864,7 @@ export default function Home() {
           </Card>
         </Flex>
       </Content>
-      <Footer className="footer">
+      <Footer style={{ background: "none" }}>
         <div
           style={{
             display: "flex",

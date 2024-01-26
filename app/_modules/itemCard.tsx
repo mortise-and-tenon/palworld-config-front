@@ -14,7 +14,7 @@ import { CardProps } from "./definitions";
 
 export default function ConfigCard(props: CardProps) {
   return (
-    <Card title={props.title} className="card">
+    <Card title={props.title} style={{backgroundColor: "rgba(255, 255, 255, 0.6)"}}>
       <Row>
         <Col span={6}>字段</Col>
         <Col span={8}>配置</Col>
